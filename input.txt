@@ -3,5 +3,5 @@ SAB
 4
 S A
 S BA
-A SA
+A S
 B b
