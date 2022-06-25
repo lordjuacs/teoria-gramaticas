@@ -30,23 +30,24 @@ class GIC {
     std::string inicial;
     int total_rules;
 
-    void read_input(const std::string& filename) {
+    void read_input() {
         std::string line;
-        std::ifstream file(filename);
-        file >> line;
+        // std::ifstream file(filename);
+        // file >> line;
+        std::cin >> line;
         for (char c : line) {
             terminales.push_back(std::string(1, c));
         }
-        file >> line;
+        std::cin >> line;
         for (char c : line) {
             variables.push_back(std::string(1, c));
         }
         int size;
-        file >> size;
+        std::cin >> size;
         total_rules = size;
-        getline(file, line);
+        getline(std::cin, line);
         while (size--) {
-            getline(file, line);
+            getline(std::cin, line);
             std::string left = line.substr(0, line.find(' '));
             if (size == total_rules - 1)
                 inicial = left;
@@ -61,7 +62,7 @@ class GIC {
     }
 
    public:
-    GIC(const std::string filename) { read_input(filename); }
+    GIC() { read_input(); }
 
     void print() {
         std::cout << "Terminales: ";
