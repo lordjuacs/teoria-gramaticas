@@ -1,6 +1,14 @@
 #include "gic.h"
 
 class Test {
+   private:
+    std::vector<std::string> terminals;  // minusculas
+    std::vector<std::string> variables;  // mayusculas
+    std::list<Regla> rules;
+    std::vector<std::string> generadores;
+    std::string inicial;
+    int total_rules;
+
    public:
     Test(const std::string& output, int terminal_size, int variable_size, int rules_size) {
         // if terminal_size is 0 or greater than 26, return, the same with variable_size
@@ -14,7 +22,6 @@ class Test {
             return;
 
         srand(time(NULL));
-        std::vector<std::string> terminals;
         for (int i = 0; i < terminal_size; i++) {
             std::string s = "";
             s += (char)('a' + rand() % 26);
@@ -26,7 +33,6 @@ class Test {
             }
         }
         // generate a vector of unique random uppercase letters, the size of such vector is variable_size
-        std::vector<std::string> variables;
         for (int i = 0; i < variable_size; i++) {
             std::string s = "";
             s += (char)('A' + rand() % 26);
@@ -38,14 +44,13 @@ class Test {
             }
         }
         // inicial is a random uppercase letter from variables
-        std::string inicial = variables[rand() % variables.size()];
+        inicial = variables[rand() % variables.size()];
 
         std::vector<std::string> not_yet_v = variables;
 
         // generate a list of rules, the size of such list is rules_size
-        std::list<Regla> rules;
-        std::vector<std::string> generadores = terminals;
-
+        generadores = terminals;
+        total_rules = rules_size;
         // generate a list of rules, the size of such list is 10 percent of rules_size
         // such that left is a varible, and right consists of only terminals
         int rules_size_terminal = rules_size * 0.2;
@@ -81,9 +86,7 @@ class Test {
             } else {
                 left = variables[rand() % variables.size()];
             }
-            if (left == "") {
-                std::cout << "left is empty" << std::endl;
-            }
+
             std::string right = "";
             // right has a random number of terminals and variables, between 1 and terminal_size + variable_size
             int right_size = rand() % (terminal_size + variable_size) + 1;
@@ -115,40 +118,15 @@ class Test {
 
         // add mix to rules
         rules.insert(rules.end(), mix.begin(), mix.end());
-
-        // print all rules
-        std::cout << "Rules: " << std::endl;
-        for (auto& rule : rules) {
-            std::cout << rule.left << " -> " << rule.right << std::endl;
-        }
-        // print all generadores
-        std::cout << "Generadores: ";
-        for (auto& generador : generadores) {
-            std::cout << generador << " ";
-        }
-        std::cout << std::endl;
-        // print inicial
-        std::cout << "Inicial: " << inicial << std::endl;
-        // print terminals
-        std::cout << "Terminales: ";
-        for (auto& terminal : terminals) {
-            std::cout << terminal;
-        }
-        std::cout << std::endl;
-        // print variables
-        std::cout << "Variables: ";
-        for (auto& variable : variables) {
-            std::cout << variable;
-        }
-        std::cout << std::endl;
-        // if inicial in generadores, print TEST VACIO: SI, else print TEST VACIO: NO
-        if (std::find(generadores.begin(), generadores.end(), inicial) == generadores.end()) {
-            std::cout << "TEST VACIO: SI" << std::endl;
-        } else {
-            std::cout << "TEST VACIO: NO" << std::endl;
-        }
         std::sort(terminals.begin(), terminals.end());
         std::sort(variables.begin(), variables.end());
+        std::sort(generadores.begin(), generadores.end());
+
+        print();
+
+        // if inicial in generadores, print TEST VACIO: SI, else print TEST VACIO: NO
+        std::cout << "TEST VACIO: ";
+        check_test_vacio() ? std::cout << "SI" << std::endl : std::cout << "NO" << std::endl;
 
         // write the contents of terminals, variables, rules to a file
         std::ofstream file(output);
@@ -172,6 +150,36 @@ class Test {
                 file << rule.left << " " << rule.right << std::endl;
             }
         }
+    }
+    void print() {
+        std::cout << "Terminales: ";
+        for (auto& t : terminals) {
+            std::cout << t << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "Variables: ";
+        for (auto& v : variables) {
+            std::cout << v << " ";
+        }
+        // print inicial
+        std::cout << std::endl
+                  << "Inicial: " << inicial << std::endl;
+        std::cout << "Total producciones: " << total_rules << std::endl;
+        std::cout << "Producciones: " << std::endl;
+        for (auto& p : rules) {
+            std::cout << p.left << " -> " << p.right << std::endl;
+        }
+        std::cout << "Generadores: ";
+        for (auto& g : generadores) {
+            std::cout << g << " ";
+        }
+        std::cout << std::endl;
+    }
+    bool check_test_vacio() {
+        if (std::find(generadores.begin(), generadores.end(), inicial) == generadores.end()) {
+            return true;
+        }
+        return false;
     }
     ~Test() {
     }

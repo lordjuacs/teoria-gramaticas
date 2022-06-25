@@ -65,6 +65,9 @@ class GIC {
     GIC() { read_input(); }
 
     void print() {
+        std::sort(terminales.begin(), terminales.end());
+        std::sort(variables.begin(), variables.end());
+        std::sort(generadores.begin(), generadores.end());
         std::cout << "Terminales: ";
         for (auto& t : terminales) {
             std::cout << t << " ";
@@ -104,13 +107,15 @@ class GIC {
                 break;
             }
         }
+        std::sort(generadores.begin(), generadores.end());
+
         std::cout << "Generadores: ";
         for (auto& g : generadores) {
             std::cout << g << " ";
         }
         std::cout << std::endl;
 
-        std::cout << "TEST VACIO QUADRATIC: " << std::endl;
+        std::cout << "TEST VACIO QUADRATIC: ";
         if (std::find(generadores.begin(), generadores.end(), inicial) == generadores.end())
             std::cout << "SI" << std::endl;
         else

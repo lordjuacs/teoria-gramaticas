@@ -7,6 +7,5 @@ int main() {
     gic.print();
     gic.test_vacio_quadratic();
 
-    // falta asegurar que cada variable este en una regla, y por ende, ahi inicial si es un random de variables
     return 0;
 }
