@@ -122,7 +122,7 @@ class Test {
         std::sort(variables.begin(), variables.end());
         std::sort(generadores.begin(), generadores.end());
 
-        print();
+        // print();
 
         // if inicial in generadores, print TEST VACIO: SI, else print TEST VACIO: NO
         std::cout << "TEST VACIO: ";
