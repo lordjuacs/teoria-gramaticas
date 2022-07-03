@@ -10,16 +10,17 @@ class Test {
     int total_rules;
 
    public:
-    Test(const std::string& output, int terminal_size, int variable_size, int rules_size) {
+    Test() = default;
+    bool run_test(const std::string& output, int terminal_size, int variable_size, int rules_size, int maximo_regla, int minimo_regla) {
         // if terminal_size is 0 or greater than 26, return, the same with variable_size
         if (terminal_size < 0 || terminal_size > 26)
-            return;
+            return false;
         if (variable_size < 0 || variable_size > 26)
-            return;
+            return false;
         if (rules_size < 0)
-            return;
+            return false;
         if (rules_size < variable_size)
-            return;
+            return false;
 
         srand(time(NULL));
         for (int i = 0; i < terminal_size; i++) {
@@ -89,7 +90,9 @@ class Test {
 
             std::string right = "";
             // right has a random number of terminals and variables, between 1 and terminal_size + variable_size
-            int right_size = rand() % (terminal_size + variable_size) + 1;
+            // right_size is a random between minimo_regla and maximo_regla inclusive
+            int right_size = rand() % (maximo_regla - minimo_regla + 1) + minimo_regla;
+
             for (int j = 0; j < right_size; j++) {
                 // right consists of random terminals and variables
                 if (rand() % 2 == 0) {
@@ -125,8 +128,9 @@ class Test {
         // print();
 
         // if inicial in generadores, print TEST VACIO: SI, else print TEST VACIO: NO
-        std::cout << "TEST VACIO: ";
-        check_test_vacio() ? std::cout << "SI" << std::endl : std::cout << "NO" << std::endl;
+        // std::cout << "TEST VACIO: ";
+        bool ans_vacio = check_test_vacio();
+        // ans_vacio ? std::cout << "SI" << std::endl : std::cout << "NO" << std::endl;
 
         // write the contents of terminals, variables, rules to a file
         std::ofstream file(output);
@@ -150,6 +154,7 @@ class Test {
                 file << rule.left << " " << rule.right << std::endl;
             }
         }
+        return ans_vacio;
     }
     void print() {
         std::cout << "Terminales: ";

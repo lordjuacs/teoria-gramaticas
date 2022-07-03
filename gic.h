@@ -30,24 +30,23 @@ class GIC {
     std::string inicial;
     int total_rules;
 
-    void read_input() {
+    void read_input(const std::string& filename) {
         std::string line;
-        // std::ifstream file(filename);
-        // file >> line;
-        std::cin >> line;
-        for (char c : line) {
+        std::ifstream file(filename);
+        file >> line;
+        for (auto& c : line) {
             terminales.push_back(std::string(1, c));
         }
-        std::cin >> line;
-        for (char c : line) {
+        file >> line;
+        for (auto& c : line) {
             variables.push_back(std::string(1, c));
         }
         int size;
-        std::cin >> size;
+        file >> size;
         total_rules = size;
-        getline(std::cin, line);
+        getline(file, line);
         while (size--) {
-            getline(std::cin, line);
+            getline(file, line);
             std::string left = line.substr(0, line.find(' '));
             if (size == total_rules - 1)
                 inicial = left;
@@ -62,7 +61,7 @@ class GIC {
     }
 
    public:
-    GIC() { read_input(); }
+    GIC(const std::string& filename) { read_input(filename); }
 
     void print() {
         std::sort(terminales.begin(), terminales.end());
@@ -87,7 +86,7 @@ class GIC {
         }
     }
 
-    void test_vacio_quadratic() {
+    bool test_vacio_quadratic(bool print_generadores = false) {
         for (int i = 0; i < producciones.size(); i++) {
             std::vector<std::string> before = generadores;
             for (auto& p : producciones) {
@@ -103,22 +102,26 @@ class GIC {
                 }
             }
             if (generadores == before) {
-                std::cout << "Finalizo en " << i + 1 << " iteraciones" << std::endl;
+                // std::cout << "Finalizo en " << i + 1 << " iteraciones" << std::endl;
                 break;
             }
         }
         std::sort(generadores.begin(), generadores.end());
-
-        std::cout << "Generadores: ";
-        for (auto& g : generadores) {
-            std::cout << g << " ";
+        if (print_generadores) {
+            std::cout << "Generadores: ";
+            for (auto& g : generadores) {
+                std::cout << g << " ";
+            }
+            std::cout << std::endl;
         }
-        std::cout << std::endl;
 
-        std::cout << "TEST VACIO QUADRATIC: ";
-        if (std::find(generadores.begin(), generadores.end(), inicial) == generadores.end())
-            std::cout << "SI" << std::endl;
-        else
-            std::cout << "NO" << std::endl;
+        // std::cout << "TEST VACIO QUADRATIC: ";
+        if (std::find(generadores.begin(), generadores.end(), inicial) == generadores.end()) {
+            // std::cout << "SI" << std::endl;
+            return true;
+        } else {
+            // std::cout << "NO" << std::endl;
+            return false;
+        }
     }
 };
